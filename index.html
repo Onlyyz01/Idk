@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ihavenoidea</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            background: linear-gradient(180deg, #0d1e40 0%, #1a0939 100%);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* Smooth background gradient animation */
+        @keyframes backgroundAnimation {
+            0% { background: linear-gradient(180deg, #0d1e40 0%, #1a0939 100%); }
+            50% { background: linear-gradient(180deg, #0d1e40 0%, #3a0856 100%); }
+            100% { background: linear-gradient(180deg, #0d1e40 0%, #1a0939 100%); }
+        }
+
+        body {
+            animation: backgroundAnimation 10s infinite alternate;
+        }
+
+        /* Starry Background */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 2px;
+            height: 2px;
+            animation: twinkling 3s infinite alternate;
+        }
+
+        .star.large {
+            width: 3px;
+            height: 3px;
+            animation-duration: 4s;
+        }
+
+        @keyframes twinkling {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        /* Centering elements */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80%; /* Slight padding at top and bottom */
+        }
+
+        /* Glowing text for added effect */
+        .text-box {
+            opacity: 1;
+            font-size: 26px;
+            margin-bottom: 10px; /* Closer to the button */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3);
+            transition: opacity 0.5s ease-in-out;
+            min-height: 50px; /* Ensures space for the text box */
+        }
+
+        /* Centered Buttons Styling */
+        .button {
+            padding: 12px 25px;
+            margin: 5px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            opacity: 1;
+            display: inline-block;
+            outline: none; /* Remove the default focus outline */
+        }
+
+        /* Remove focus outline when clicked */
+        .button:focus {
+            outline: none;
+        }
+
+        /* Cool hover effect with scaling and glowing edges */
+        .button:hover {
+            transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Black screen for closing tab */
+        .blackscreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Starry Background -->
+    <div class="stars star-layer-1"></div>
+
+    <!-- Container to center text and buttons -->
+    <div class="container">
+        <!-- Text Box -->
+        <div class="text-box" id="dialogText">Hello there! Looks like you're lost</div>
+
+        <!-- Buttons -->
+        <button class="button" id="btn1">No, I'm not.</button>
+        <button class="button" id="btn2" style="display:none;">Why?</button>
+        <button class="button" id="btn3-yes" style="display:none;">Yes</button>
+        <button class="button" id="btn3-no" style="display:none;">No</button>
+        <button class="button" id="btn4-yes" style="display:none;">Yes</button>
+        <button class="button" id="btn5-sorry" style="display:none;">Sorry but yes...</button>
+    </div>
+
+    <!-- Black screen to close the tab -->
+    <div class="blackscreen" id="blackScreen"></div>
+
+    <script>
+        // Generate Stars Randomly with Twinkling Effect
+        function createStars(numStars, layer) {
+            const stars = document.querySelector(layer);
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                if (Math.random() > 0.8) star.classList.add('large'); // 20% of stars will be larger
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.left = Math.random() * 100 + 'vw';
+                stars.appendChild(star);
+            }
+        }
+
+        createStars(150, '.stars'); // Generates stars without movement, just twinkling
+
+        // Typing text effect with improved handling
+        let typingInterval;
+        function typeText(element, text, speed = 50, callback = null) {
+            clearInterval(typingInterval); // Clear any existing interval to avoid overlapping typing
+            element.textContent = ''; // Clear previous text
+            let i = 0;
+            const normalizedText = text.normalize(); // Normalize the text to prevent encoding issues
+            typingInterval = setInterval(() => {
+                if (i < normalizedText.length) {
+                    element.textContent += normalizedText.charAt(i); // Properly add characters one by one
+                    i++;
+                } else {
+                    clearInterval(typingInterval); // Clear interval when typing is done
+                    if (callback) callback(); // Execute callback after typing is finished
+                }
+            }, speed);
+        }
+
+        // Dialog text handling with typing effect
+        const dialogText = document.getElementById('dialogText');
+
+        document.getElementById('btn1').addEventListener('click', () => {
+            typeText(dialogText, "I've been overthinking :(");
+            document.getElementById('btn1').style.display = 'none';
+            document.getElementById('btn2').style.display = 'inline-block';
+        });
+
+        document.getElementById('btn2').addEventListener('click', () => {
+            typeText(dialogText, "Do you really admire me?");
+            document.getElementById('btn2').style.display = 'none';
+            document.getElementById('btn3-yes').style.display = 'inline-block';
+            document.getElementById('btn3-no').style.display = 'inline-block';
+        });
+
+        document.getElementById('btn3-yes').addEventListener('click', () => {
+            typeText(dialogText, "Really? You admire me, but you're not infatuated?");
+            document.getElementById('btn3-yes').style.display = 'none';
+            document.getElementById('btn3-no').style.display = 'none';
+            document.getElementById('btn4-yes').style.display = 'inline-block';
+        });
+
+        document.getElementById('btn4-yes').addEventListener('click', () => {
+            typeText(dialogText, "I'll do my best for you :)) I hope you'll stay with me for all the beautiful moments we can share together...", 50, () => {
+                // After first text, show second part and delay black screen
+                setTimeout(() => {
+                    typeText(dialogText, "Your happiness means everything to me, and I’m dedicated to making our time together truly special. :))", 50, () => {
+                        const blackScreen = document.getElementById('blackScreen');
+                        blackScreen.style.display = 'block';
+                        setTimeout(() => {
+                            window.close(); // Attempt to close the tab
+                        }, 7000); // 5 seconds delay for black screen
+                    });
+                }, 2000); // 2 seconds delay between the two messages
+            });
+            document.getElementById('btn4-yes').style.display = 'none';
+        });
+
+        document.getElementById('btn3-no').addEventListener('click', () => {
+            typeText(dialogText, "Owh... that's really not what I expected. So, is it just infatuation?");
+            document.getElementById('btn3-yes').style.display = 'none';
+            document.getElementById('btn3-no').style.display = 'none';
+            document.getElementById('btn5-sorry').style.display = 'inline-block';
+        });
+
+        document.getElementById('btn5-sorry').addEventListener('click', () => {
+            typeText(dialogText, "Owh... It feels like we've drifted apart, and that makes me a bit sad. I just wish we could treat each other as friends again, at least for old times' sake...", 50, () => {
+                typeText(dialogText, "It would mean a lot to me if we could find a way to reconnect and support each other once more. Can we?", 50, () => {
+                    const blackScreen = document.getElementById('blackScreen');
+                    blackScreen.style.display = 'block';
+                    setTimeout(() => {
+                        window.close(); // Attempt to close the tab
+                    }, 10000); // 5 seconds delay for black screen
+                });
+            });
+            document.getElementById('btn5-sorry').style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>
