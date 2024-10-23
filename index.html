@@ -205,15 +205,8 @@
 
         document.getElementById('btn4-yes').addEventListener('click', () => {
             typeText(dialogText, "I'll do my best for you :)) I hope you'll stay with me for all the beautiful moments we can share together...", 50, () => {
-                // After first text, show second part and delay black screen
                 setTimeout(() => {
-                    typeText(dialogText, "Your happiness means everything to me, and I’m dedicated to making our time together truly special. :))", 50, () => {
-                        const blackScreen = document.getElementById('blackScreen');
-                        blackScreen.style.display = 'block';
-                        setTimeout(() => {
-                            window.close(); // Attempt to close the tab
-                        }, 7000); // 5 seconds delay for black screen
-                    });
+                    typeText(dialogText, "Your happiness means everything to me, and I’m dedicated to making our time together truly special. :))", 50);
                 }, 2000); // 2 seconds delay between the two messages
             });
             document.getElementById('btn4-yes').style.display = 'none';
@@ -228,13 +221,7 @@
 
         document.getElementById('btn5-sorry').addEventListener('click', () => {
             typeText(dialogText, "Owh... It feels like we've drifted apart, and that makes me a bit sad. I just wish we could treat each other as friends again, at least for old times' sake...", 50, () => {
-                typeText(dialogText, "It would mean a lot to me if we could find a way to reconnect and support each other once more. Can we?", 50, () => {
-                    const blackScreen = document.getElementById('blackScreen');
-                    blackScreen.style.display = 'block';
-                    setTimeout(() => {
-                        window.close(); // Attempt to close the tab
-                    }, 10000); // 5 seconds delay for black screen
-                });
+                typeText(dialogText, "It would mean a lot to me if we could find a way to reconnect and support each other once more. Can we?", 50);
             });
             document.getElementById('btn5-sorry').style.display = 'none';
         });
